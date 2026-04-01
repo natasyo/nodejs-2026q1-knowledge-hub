@@ -5,7 +5,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { UserRole } from './UserRole';
+import { UserRole } from '../../../core/types/UserRole';
 export class CreateUserDto {
   @IsString()
   @MinLength(3, { message: 'Login must be at least 3 characters' })
