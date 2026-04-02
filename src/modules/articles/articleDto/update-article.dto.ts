@@ -1,6 +1,5 @@
-import { IsArray, IsEnum, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
 import { ArticleStatus } from '../../../core/types/articleStatus';
-import { Optional } from '@nestjs/common';
 export class UpdateArticleDto {
   @IsString()
   title: string;
@@ -8,12 +7,14 @@ export class UpdateArticleDto {
   content: string;
 
   @IsEnum(ArticleStatus)
-  status: ArticleStatus;
-  @IsString()
-  @Optional()
-  authorId: string | null; // refers to User
-  @Optional()
-  categoryId: string | null; // refers to Category
+  @IsOptional()
+  status?: ArticleStatus;
+  @IsUUID()
+  @IsOptional()
+  authorId?: string; // refers to User
+  @IsUUID()
+  @IsOptional()
+  categoryId?: string; // refers to Category
 
   @IsArray()
   @IsString({ each: true })

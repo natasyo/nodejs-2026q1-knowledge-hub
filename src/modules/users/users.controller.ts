@@ -52,7 +52,7 @@ export class UsersController {
   @Delete(':id')
   deleteUser(@Param('id') id: string, @Res() res: Response) {
     res
-      .status(201)
+      .status(204)
       .json(this.usersService.addUser(this.usersService.deleteUser(id)));
   }
 }

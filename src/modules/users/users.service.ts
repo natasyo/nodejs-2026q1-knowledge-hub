@@ -72,7 +72,7 @@ export class UsersService {
     }
     const user = this.users.find((user) => user.id === userId);
     if (!user) throw new NotFoundException('user not found');
-    this.users = [];
+    this.users = this.users.filter((user) => user.id !== userId);
     return user;
   }
 }
