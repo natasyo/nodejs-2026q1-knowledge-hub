@@ -3,39 +3,22 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Category } from '../../core/types/data.types';
+import { Article } from '../../core/types/data.types';
 import { randomUUID } from 'node:crypto';
 import { isUUID } from 'class-validator';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { dataBase } from '../../core/db/db';
 
 @Injectable()
 export class CategoriesService {
-  categories: Category[] = [
-    {
-      id: randomUUID(),
-      name: 'skfhlskjf sdjhflkdsj',
-      description: 'mnfnd sdfjkl;sdj s.;dlkflds',
-    },
-    {
-      id: randomUUID(),
-      name: 'skfhlskjf sdjhflkdsj',
-      description: 'mnfnd sdfjkl;sdj s.;dlkflds',
-    },
-    {
-      id: randomUUID(),
-      name: 'skfhlskjf sdjhflkdsj',
-      description: 'mnfnd sdfjkl;sdj s.;dlkflds',
-    },
-  ];
-
   getAllCategories() {
-    return this.categories;
+    return dataBase.categories;
   }
 
   getCategory(id: string) {
     if (!isUUID(id)) throw new BadRequestException('id must be UUID');
-    const category = this.categories.find((category) => category.id === id);
+    const category = dataBase.categories.find((category) => category.id === id);
     if (!category) throw new NotFoundException('category not found');
     return category;
   }
@@ -44,18 +27,18 @@ export class CategoriesService {
       ...category,
       id: randomUUID(),
     };
-    this.categories.push(newCategory);
+    dataBase.categories.push(newCategory);
     return newCategory;
   }
   updateCategory(id: string, dto: UpdateCategoryDto) {
     if (!isUUID(id)) throw new BadRequestException('id must be UUID');
-    const category = this.categories.find((category) => category.id === id);
+    const category = dataBase.categories.find((category) => category.id === id);
     if (!category) throw new NotFoundException('category not found');
     const updateCategory = {
       ...category,
       ...dto,
     };
-    this.categories = this.categories.map((item) => {
+    dataBase.categories = dataBase.categories.map((item) => {
       if (item.id === id) return updateCategory;
       return item;
     });
@@ -63,8 +46,17 @@ export class CategoriesService {
   }
   deleteCategory(id: string) {
     if (!isUUID(id)) throw new BadRequestException('id must be UUID');
-    const category = this.categories.find((category) => category.id === id);
+    const category = dataBase.categories.find((category) => category.id === id);
     if (!category) throw new NotFoundException('category not found');
-    return this.categories.filter((category) => category.id !== id);
+    (dataBase.articles as Article[]).forEach((item) => {
+      if (item.categoryId === category.id) {
+        item.categoryId = null;
+      }
+    });
+    dataBase.categories = dataBase.categories.filter(
+      (category: { id: string }) => category.id !== id,
+    );
+
+    return;
   }
 }

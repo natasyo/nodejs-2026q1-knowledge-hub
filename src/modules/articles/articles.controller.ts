@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   Post,
   Put,
@@ -18,13 +19,14 @@ export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
 
   @Get()
-  articles(@Res() res: Response) {
-    return res.status(200).json(this.articlesService.getArticles());
+  @HttpCode(200)
+  articles() {
+    return this.articlesService.getArticles();
   }
-
+  @HttpCode(200)
   @Get(':id')
-  article(@Param('id') id: string, @Res() res: Response) {
-    return res.status(200).json(this.articlesService.getArticleById(id));
+  article(@Param('id') id: string) {
+    return this.articlesService.getArticleById(id);
   }
   @Post()
   addArticle(@Body() data: CreateArticleDto, @Res() res: Response) {
@@ -39,9 +41,9 @@ export class ArticlesController {
     res.status(200).json(this.articlesService.updateArticle(id, dto));
   }
   @Delete(':id')
-  deleteArticle(@Param('id') id: string, @Res() res: Response) {
-    const art = this.articlesService.deleteArticle(id);
-    console.log(art);
-    res.status(204).json(art);
+  @HttpCode(204)
+  deleteArticle(@Param('id') id: string) {
+    this.articlesService.deleteArticle(id);
+    return;
   }
 }

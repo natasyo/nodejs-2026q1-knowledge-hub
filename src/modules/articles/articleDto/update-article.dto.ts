@@ -7,8 +7,7 @@ export class UpdateArticleDto {
   content: string;
 
   @IsEnum(ArticleStatus)
-  @IsOptional()
-  status?: ArticleStatus;
+  status: ArticleStatus;
   @IsUUID()
   @IsOptional()
   authorId?: string; // refers to User
@@ -18,6 +17,5 @@ export class UpdateArticleDto {
 
   @IsArray()
   @IsString({ each: true })
-  @IsOptional()
-  tags?: string[]; // array of tag names
+  tags: string[]; // array of tag names
 }

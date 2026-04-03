@@ -1,4 +1,4 @@
-import { IsString, IsUUID } from 'class-validator';
+import { IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class CreateCommentDto {
   @IsString()
@@ -6,5 +6,6 @@ export class CreateCommentDto {
   @IsUUID()
   articleId: string; // refers to Article
   @IsUUID()
-  authorId: string | null; // refers to User
+  @IsOptional()
+  authorId: string; // refers to User
 }

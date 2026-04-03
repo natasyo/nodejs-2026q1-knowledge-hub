@@ -2,53 +2,49 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnprocessableEntityException,
 } from '@nestjs/common';
-import { Comment } from '../../core/types/data.types';
+import { Article, Comment, User } from '../../core/types/data.types';
 import { randomUUID } from 'node:crypto';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { isUUID } from 'class-validator';
+import { dataBase } from '../../core/db/db';
+
 @Injectable()
 export class CommentsService {
-  comments: Comment[] = [
-    {
-      content: 'dsfnsdkjfkl',
-      id: randomUUID(),
-      articleId: '6a0b63e8-a60a-4dab-9c32-36eb59928f70',
-      authorId: randomUUID(),
-      createdAt: Date.now(),
-    },
-    {
-      content: 'dsfns dkjfkl',
-      id: randomUUID(),
-      articleId: '6a0b63e8-a60a-4dab-9c32-36eb59928f70',
-      authorId: randomUUID(),
-      createdAt: Date.now(),
-    },
-    {
-      content: 'dsfn sdkfghfg fghjfkl',
-      id: randomUUID(),
-      articleId: 'a59d4849-973c-4212-8706-ce102cc3cadf',
-      authorId: randomUUID(),
-      createdAt: Date.now(),
-    },
-  ];
-
+  comments: Comment[] = dataBase.comments;
   getComments(articleId: string) {
-    const comments = this.comments.filter((comment) => {
-      console.log(comment.articleId, articleId);
-      return comment.articleId === articleId;
+    if (!isUUID(articleId)) {
+      throw new BadRequestException('Invalid UUID');
+    }
+
+    return dataBase.comments.filter((comment) => {
+      return comment.articleId === articleId || comment.id === articleId;
     });
-    console.log(comments);
-    return comments;
+  }
+
+  getById(id: string): Comment {
+    if (!isUUID(id)) throw new BadRequestException('id must be UUID');
+    const comment = dataBase.categories.find((item) => item.id === id);
+    if (!comment) throw new NotFoundException('comment not found');
+    return dataBase.comments.find(
+      (comment: { id: string }) => comment.id === id,
+    );
   }
 
   createComment(dto: CreateCommentDto) {
+    const isExistArticle = (dataBase.articles as Article[]).some(
+      (article) => article.id === dto.articleId,
+    );
+    if (!isExistArticle)
+      throw new UnprocessableEntityException('Article not found');
     const newComment: Comment = {
       ...dto,
       createdAt: Date.now(),
       id: randomUUID(),
     };
-    this.comments.push(newComment);
+    dataBase.comments.push(newComment);
+    console.log(dataBase.comments);
     return newComment;
   }
 
@@ -56,9 +52,14 @@ export class CommentsService {
     if (!isUUID(commentId)) {
       throw new BadRequestException('Invalid comment id');
     }
-    const comment = this.comments.find((item) => item.id === commentId);
+    const comment = dataBase.comments.find(
+      (item: { id: string }) => item.id === commentId,
+    );
+    console.log('deleteComment', comment);
     if (!comment) throw new NotFoundException('comment not found');
-    this.comments = this.comments.filter((comment) => comment.id !== commentId);
-    return this.comments;
+    dataBase.comments = dataBase.comments.filter(
+      (comment: { id: string }) => comment.id !== commentId,
+    );
+    return;
   }
 }

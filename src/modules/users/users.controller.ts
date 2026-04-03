@@ -8,6 +8,9 @@ import {
   Put,
   Req,
   Res,
+  Headers,
+  UnauthorizedException,
+  HttpCode,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { UsersService } from './users.service';
@@ -19,40 +22,35 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  getUser(@Req() req: Request, @Res() res: Response) {
-    res.status(200).json({ data: this.usersService.getUsers() });
+  getUser() {
+    return this.usersService.getUsers();
   }
 
   @Get(':id')
-  getUserById(@Param('id') id: string, @Res() res: Response) {
-    res.status(201).json({
-      data: this.usersService.getUserById(id),
-    });
+  @HttpCode(200)
+  getUserById(@Param('id') id: string) {
+    return this.usersService.getUserById(id);
   }
 
   @Post()
-  createUser(@Body() user: CreateUserDto, @Res() res: Response) {
-    res.status(201).json(this.usersService.addUser(user));
+  @HttpCode(201)
+  createUser(@Body() user: CreateUserDto) {
+    return this.usersService.addUser(user);
   }
   @Put(':id')
+  @HttpCode(200)
   updatePassword(
     @Param('id') id: string,
     @Body() updatePasswordDto: UpdatePasswordDto,
-    @Res() res: Response,
   ) {
-    res
-      .status(201)
-      .json(
-        this.usersService.addUser(
-          this.usersService.updatePassword(id, updatePasswordDto),
-        ),
-      );
+    this.usersService.updatePassword(id, updatePasswordDto);
+    return;
   }
 
   @Delete(':id')
+  @HttpCode(204)
   deleteUser(@Param('id') id: string, @Res() res: Response) {
-    res
-      .status(204)
-      .json(this.usersService.addUser(this.usersService.deleteUser(id)));
+    this.usersService.deleteUser(id);
+    return;
   }
 }

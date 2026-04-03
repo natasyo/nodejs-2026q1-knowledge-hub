@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   Post,
   Put,
@@ -18,7 +19,8 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
   @Get()
   getCategories(@Res() res: Response) {
-    res.status(200).json(this.categoriesService.getAllCategories());
+    const result = this.categoriesService.getAllCategories();
+    res.status(200).json(result);
   }
 
   @Get(':id')
@@ -46,7 +48,9 @@ export class CategoriesController {
   }
 
   @Delete(':id')
-  deleteCategory(@Res() res: Response, @Param('id') id: string) {
-    res.status(204).json(this.categoriesService.deleteCategory(id));
+  @HttpCode(204)
+  deleteCategory(@Param('id') id: string) {
+    this.categoriesService.deleteCategory(id);
+    return;
   }
 }

@@ -3,28 +3,39 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   Post,
-  Res,
+  Query,
 } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
-import { Response } from 'express';
 
 @Controller('comment')
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
-  @Get(':articleId')
-  getComments(@Param('articleId') articleId: string, @Res() res: Response) {
-    res.status(200).json(this.commentsService.getComments(articleId));
+  @Get()
+  @HttpCode(200)
+  getComments(@Query('articleId') articleId: string) {
+    return this.commentsService.getComments(articleId);
   }
+
+  @Get(':id')
+  @HttpCode(200)
+  getCommentsById(@Param('id') id: string) {
+    return this.commentsService.getById(id);
+  }
+
   @Post()
-  create(@Body() createCommentDto: CreateCommentDto, @Res() res: Response) {
-    res.status(201).json(this.commentsService.createComment(createCommentDto));
+  @HttpCode(201)
+  create(@Body() createCommentDto: CreateCommentDto) {
+    return this.commentsService.createComment(createCommentDto);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: string, @Res() res: Response) {
-    res.status(204).json(this.commentsService.deleteComment(id));
+  @HttpCode(204)
+  delete(@Param('id') id: string) {
+    this.commentsService.deleteComment(id);
+    return;
   }
 }

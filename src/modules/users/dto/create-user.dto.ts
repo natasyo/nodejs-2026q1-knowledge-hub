@@ -18,5 +18,5 @@ export class CreateUserDto {
 
   @IsOptional()
   @IsEnum(UserRole, { message: 'Role will be admin, editor, viewer' })
-  role?: 'admin' | 'editor' | 'viewer';
+  role?: UserRole;
 }

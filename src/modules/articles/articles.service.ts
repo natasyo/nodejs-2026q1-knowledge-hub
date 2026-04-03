@@ -8,42 +8,19 @@ import { randomUUID } from 'node:crypto';
 import { isUUID } from 'class-validator';
 import { CreateArticleDto } from './articleDto/create-article.dto';
 import { UpdateArticleDto } from './articleDto/update-article.dto';
+import { dataBase } from '../../core/db/db';
 
 @Injectable()
 export class ArticlesService {
-  articles: Article[] = [
-    {
-      id: randomUUID(),
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-      authorId: randomUUID(),
-      categoryId: randomUUID(),
-      content: 'sdfjsdhfjdshfkj',
-      status: 'draft',
-      tags: ['dsfds', 'sdfsd'],
-      title: 'fsjdfkj',
-    },
-    {
-      id: randomUUID(),
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-      authorId: randomUUID(),
-      categoryId: randomUUID(),
-      content: 'sdfjsdhfjdfgdfgdshfkj',
-      status: 'draft',
-      tags: ['ddgdfgdfgsfds', 'sdfdgdfgsd'],
-      title: 'fsdfgfdgjdfkj',
-    },
-  ];
-
+  articles: Article[] = dataBase.articles;
   getArticles() {
-    return this.articles;
+    return dataBase.articles;
   }
   getArticleById(id: string) {
     if (!isUUID(id)) {
       throw new BadRequestException('Invalid UUID');
     }
-    const article = this.articles.find((article) => article.id === id);
+    const article = dataBase.articles.find((article) => article.id === id);
     if (!article) throw new NotFoundException('Article not found');
     return article;
   }
@@ -54,7 +31,7 @@ export class ArticlesService {
       id: randomUUID(),
       ...article,
     } as Article;
-    this.articles.push(newUser);
+    dataBase.articles.push(newUser);
     return newUser;
   }
 
@@ -62,7 +39,7 @@ export class ArticlesService {
     if (!isUUID(articleId)) {
       throw new BadRequestException('Invalid UUID');
     }
-    const article = this.articles.find((item) => item.id === articleId);
+    const article = dataBase.articles.find((item) => item.id === articleId);
     if (!article) throw new NotFoundException('Article not found');
     const updateArticle = {
       ...article,
@@ -70,7 +47,7 @@ export class ArticlesService {
       updatedAt: Date.now(),
     };
 
-    this.articles = this.articles.map((item) => {
+    dataBase.articles = dataBase.articles.map((item) => {
       if (item.id === articleId) return updateArticle;
       return item;
     });
@@ -80,9 +57,11 @@ export class ArticlesService {
     if (!isUUID(articleId)) {
       throw new BadRequestException('Invalid user id');
     }
-    const article = this.articles.find((item) => item.id === articleId);
+    const article = dataBase.articles.find((item) => item.id === articleId);
     if (!article) throw new NotFoundException('Article not found');
-    this.articles = this.articles.filter((article) => article.id !== articleId);
+    dataBase.articles = dataBase.articles.filter(
+      (article) => article.id !== articleId,
+    );
     return article;
   }
 }
