@@ -8,7 +8,6 @@ import {
   Put,
   HttpCode,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';

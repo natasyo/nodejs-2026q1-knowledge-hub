@@ -3,7 +3,6 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Article } from '../../core/types/data.types';
 import { randomUUID } from 'node:crypto';
 import { isUUID } from 'class-validator';
 import { CreateCategoryDto } from './dto/create-category.dto';

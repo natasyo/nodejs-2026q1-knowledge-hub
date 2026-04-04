@@ -4,7 +4,7 @@ import {
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { Article, Comment, User } from '../../core/types/data.types';
+import { Article, Comment } from '../../core/types/data.types';
 import { randomUUID } from 'node:crypto';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { isUUID } from 'class-validator';
