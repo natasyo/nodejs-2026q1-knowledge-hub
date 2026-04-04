@@ -24,6 +24,17 @@ export class ArticlesService {
     if (!article) throw new NotFoundException('Article not found');
     return article;
   }
+
+  getArticleByStatus(status: string): Article[] {
+    return dataBase.articles.filter((article: Article) => {
+      return article.status === status;
+    });
+  }
+  getArticlesByTag(tag: string): Article[] {
+    return dataBase.articles.filter((article: Article) => {
+      return article.tags.indexOf(tag) > -1;
+    });
+  }
   addArticle(article: CreateArticleDto) {
     const newUser = {
       createdAt: Date.now(),

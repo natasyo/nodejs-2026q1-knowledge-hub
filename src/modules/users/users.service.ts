@@ -10,6 +10,7 @@ import { isUUID } from 'class-validator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { dataBase } from '../../core/db/db';
+import { UserRole } from '../../core/types/UserRole';
 
 @Injectable()
 export class UsersService {
@@ -26,13 +27,13 @@ export class UsersService {
     return userData;
   }
   addUser(user: CreateUserDto) {
-    console.log(user.role);
     const newUser = {
       createdAt: Date.now(),
       updatedAt: Date.now(),
       id: randomUUID(),
       ...user,
     } as User;
+    if (newUser.role === undefined) newUser.role = UserRole.VIEWER;
     dataBase.users.push(newUser);
     const { password, ...userData } = newUser;
     return userData;

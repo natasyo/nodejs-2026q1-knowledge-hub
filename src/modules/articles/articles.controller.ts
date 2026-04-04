@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Res,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
@@ -20,6 +21,16 @@ export class ArticlesController {
 
   @Get()
   @HttpCode(200)
+  getArticleByStatus(
+    @Query('status') status: string,
+    @Query('tag') tag: string,
+  ) {
+    if (status) return this.articlesService.getArticleByStatus(status);
+    else return this.articlesService.getArticlesByTag(tag);
+  }
+
+  @Get()
+  @HttpCode(200)
   articles() {
     return this.articlesService.getArticles();
   }
@@ -28,6 +39,7 @@ export class ArticlesController {
   article(@Param('id') id: string) {
     return this.articlesService.getArticleById(id);
   }
+
   @Post()
   addArticle(@Body() data: CreateArticleDto, @Res() res: Response) {
     return res.status(201).json(this.articlesService.addArticle(data));

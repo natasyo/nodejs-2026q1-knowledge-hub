@@ -44,7 +44,6 @@ export class CommentsService {
       id: randomUUID(),
     };
     dataBase.comments.push(newComment);
-    console.log(dataBase.comments);
     return newComment;
   }
 
@@ -55,7 +54,6 @@ export class CommentsService {
     const comment = dataBase.comments.find(
       (item: { id: string }) => item.id === commentId,
     );
-    console.log('deleteComment', comment);
     if (!comment) throw new NotFoundException('comment not found');
     dataBase.comments = dataBase.comments.filter(
       (comment: { id: string }) => comment.id !== commentId,

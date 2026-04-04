@@ -1,4 +1,10 @@
-import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { ArticleStatus } from '../../../core/types/articleStatus';
 
 export class CreateArticleDto {
@@ -12,4 +18,8 @@ export class CreateArticleDto {
 
   @IsEnum(ArticleStatus)
   status: ArticleStatus;
+
+  @IsArray()
+  @IsString({ each: true })
+  tags: string[]; // array of tag names
 }
