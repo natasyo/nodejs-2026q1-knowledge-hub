@@ -11,6 +11,12 @@
 git clone {repository URL}
 ```
 
+## go to the Task-5 branch
+```
+git checkout dev-task-5
+```
+
+
 ## Installing NPM modules
 
 ```
@@ -26,6 +32,13 @@ npm start
 After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
+
+
+
+## Open swagger
+
+http://localhost:4000/doc
+
 
 ## Testing
 
