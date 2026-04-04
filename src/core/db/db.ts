@@ -1,6 +1,200 @@
-import * as path from 'path';
-import * as fs from 'node:fs';
+// import * as path from 'path';
+// import * as fs from 'node:fs';
+import { Database } from '../types/data.types';
 
-export let dataBase = JSON.parse(
-  fs.readFileSync(path.join(process.cwd(), 'src/core/db/data.json'), 'utf8'),
-);
+// export let dataBase = JSON.parse(
+//   fs.readFileSync(path.join(process.cwd(), 'src/core/db/data.json'), 'utf8'),
+// );
+
+export const dataBase: Database = {
+  users: [
+    {
+      id: 'c0a8012e-7b1a-4f3a-9c2d-8e9a1f0b1c11',
+      login: 'admin',
+      password: 'pass1',
+      role: 'admin',
+      createdAt: 1710000000001,
+      updatedAt: 1775322380810,
+    },
+    {
+      id: 'd1b9023f-8c2b-4a4b-a1d3-9f0b2c3d4e22',
+      login: 'editor1',
+      password: 'pass2',
+      role: 'editor',
+      createdAt: 1710000000002,
+      updatedAt: 1775322380810,
+    },
+    {
+      id: 'e2c01340-9d3c-4b5c-b2e4-0a1c2d3e4f33',
+      login: 'editor2',
+      password: 'pass3',
+      role: 'editor',
+      createdAt: 1710000000003,
+      updatedAt: 1775322380810,
+    },
+    {
+      id: 'f3d12451-ae4d-4c6d-c3f5-1b2d3e4f5a44',
+      login: 'viewer1',
+      password: 'pass4',
+      role: 'viewer',
+      createdAt: 1710000000004,
+      updatedAt: 1775322380810,
+    },
+    {
+      id: '04e23562-bf5e-4d7e-d406-2c3e4f5a6b55',
+      login: 'viewer2',
+      password: 'pass5',
+      role: 'viewer',
+      createdAt: 1710000000005,
+      updatedAt: 1775322380810,
+    },
+  ],
+  categories: [
+    {
+      id: '11111111-1111-4111-8111-111111111111',
+      name: 'Tech',
+      description: 'Tech stuff',
+    },
+    {
+      id: '22222222-2222-4222-8222-222222222222',
+      name: 'Life',
+      description: 'Lifestyle',
+    },
+    {
+      id: '33333333-3333-4333-8333-333333333333',
+      name: 'Business',
+      description: 'Business topics',
+    },
+    {
+      id: '44444444-4444-4444-8444-444444444444',
+      name: 'Science',
+      description: 'Science topics',
+    },
+    {
+      id: '55555555-5555-4555-8555-555555555555',
+      name: 'Travel',
+      description: 'Travel topics',
+    },
+    {
+      name: 'TEST_CATEGORY',
+      description: 'Test category description',
+      id: 'ce698e18-96e1-4e22-a124-63cc84b255e8',
+    },
+  ],
+  articles: [
+    {
+      id: 'a9f1c2d3-1234-4abc-8def-123456789001',
+      title: 'Article 1',
+      content: 'Content 1',
+      status: 'published',
+      authorId: 'c0a8012e-7b1a-4f3a-9c2d-8e9a1f0b1c11',
+      categoryId: '11111111-1111-4111-8111-111111111111',
+      tags: ['node.ja'],
+      createdAt: 1710000010001,
+      updatedAt: 1710000010001,
+    },
+    {
+      id: 'b1e2d3c4-2345-4bcd-9efa-223456789002',
+      title: 'Article 2',
+      content: 'Content 2',
+      status: 'draft',
+      authorId: 'd1b9023f-8c2b-4a4b-a1d3-9f0b2c3d4e22',
+      categoryId: '22222222-2222-4222-8222-222222222222',
+      tags: ['python'],
+      createdAt: 1710000010002,
+      updatedAt: 1710000010002,
+    },
+    {
+      id: 'c2d3e4f5-3456-4cde-af01-323456789003',
+      title: 'Article 3',
+      content: 'Content 3',
+      status: 'archived',
+      authorId: 'e2c01340-9d3c-4b5c-b2e4-0a1c2d3e4f33',
+      categoryId: '33333333-3333-4333-8333-333333333333',
+      tags: ['python'],
+      createdAt: 1710000010003,
+      updatedAt: 1710000010003,
+    },
+    {
+      createdAt: 1775322390837,
+      updatedAt: 1775322390837,
+      id: '5ebf1e48-d2d4-4f48-a1ba-266e97c24fe7',
+      title: 'TEST_ARTICLE',
+      content: 'Test content',
+      status: 'draft',
+      authorId: null,
+      categoryId: null,
+      tags: [],
+    },
+    {
+      createdAt: 1775322396024,
+      updatedAt: 1775322396024,
+      id: '77d1da59-6fbc-46bc-8840-ca64aaf4c030',
+      title: 'TEST_ARTICLE',
+      content: 'Test article content',
+      status: 'draft',
+      authorId: null,
+      categoryId: 'ce698e18-96e1-4e22-a124-63cc84b255e8',
+      tags: [],
+    },
+    {
+      createdAt: 1775322396030,
+      updatedAt: 1775322396030,
+      id: 'e6969775-ed98-4685-a9b7-0d074d50378d',
+      title: 'NO_CATEGORY',
+      content: 'Test article content',
+      status: 'draft',
+      authorId: null,
+      categoryId: null,
+      tags: [],
+    },
+    {
+      createdAt: 1775322396131,
+      updatedAt: 1775322396131,
+      id: '16706ef5-7907-466d-b2b1-e078689031e9',
+      title: 'TEST_ARTICLE',
+      content: 'Test article content',
+      status: 'draft',
+      authorId: null,
+      categoryId: null,
+      tags: [],
+    },
+  ],
+  comments: [
+    {
+      id: 'd3e4f5a6-4567-4def-b012-423456789004',
+      content: 'Nice!',
+      articleId: 'a9f1c2d3-1234-4abc-8def-123456789001',
+      authorId: 'd1b9023f-8c2b-4a4b-a1d3-9f0b2c3d4e22',
+      createdAt: 1710000020001,
+    },
+    {
+      id: 'd3e4f5a6-4567-4def-b012-423456789005',
+      content: 'Nice!',
+      articleId: 'a9f1c2d3-1234-4abc-8def-123456789001',
+      authorId: 'e2c01340-9d3c-4b5c-b2e4-0a1c2d3e4f33',
+      createdAt: 1710000020001,
+    },
+    {
+      id: 'd3e4f5a6-4567-4def-b012-423456789006',
+      content: 'Nice!',
+      articleId: 'a9f1c2d3-1234-4abc-8def-123456789001',
+      authorId: 'c0a8012e-7b1a-4f3a-9c2d-8e9a1f0b1c11',
+      createdAt: 1710000020001,
+    },
+    {
+      content: 'Test comment',
+      articleId: 'eb1dbe2e-1815-45e4-83a3-3f8f21c47393',
+      authorId: null,
+      createdAt: 1775322396171,
+      id: '9d58e3a5-ecc2-4a05-a9eb-bb4767119e6c',
+    },
+    {
+      content: 'Test comment for GET',
+      articleId: '494e888c-efdc-4fca-8685-111229ef2d30',
+      authorId: null,
+      createdAt: 1775322396322,
+      id: 'b342be02-086a-4329-bb30-6a0f04ebf32d',
+    },
+  ],
+};

@@ -48,7 +48,7 @@ export class CategoriesService {
     if (!isUUID(id)) throw new BadRequestException('id must be UUID');
     const category = dataBase.categories.find((category) => category.id === id);
     if (!category) throw new NotFoundException('category not found');
-    (dataBase.articles as Article[]).forEach((item) => {
+    dataBase.articles.forEach((item) => {
       if (item.categoryId === category.id) {
         item.categoryId = null;
       }

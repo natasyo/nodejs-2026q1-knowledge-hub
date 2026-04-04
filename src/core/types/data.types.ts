@@ -32,3 +32,10 @@ export interface Comment {
   authorId: string | null; // refers to User
   createdAt: number; // timestamp of creation
 }
+
+export interface Database {
+  comments: Comment[];
+  articles: Article[];
+  categories: Category[];
+  users: User[];
+}

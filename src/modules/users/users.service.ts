@@ -4,7 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Article, User, Comment } from '../../core/types/data.types';
+import { User, Comment } from '../../core/types/data.types';
 import { randomUUID } from 'node:crypto';
 import { isUUID } from 'class-validator';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -24,19 +24,21 @@ export class UsersService {
     const user = dataBase.users.find((user) => user.id === id);
     if (!user) throw new NotFoundException('user not found');
     const { password, ...userData } = user;
-    return userData;
+    return { userData, password };
   }
   addUser(user: CreateUserDto) {
+    const id = randomUUID();
     const newUser = {
       createdAt: Date.now(),
       updatedAt: Date.now(),
-      id: randomUUID(),
+      id,
       ...user,
     } as User;
     if (newUser.role === undefined) newUser.role = UserRole.VIEWER;
     dataBase.users.push(newUser);
     const { password, ...userData } = newUser;
-    return userData;
+    console.log(userData);
+    return { userData, password };
   }
 
   updatePassword(userId: string, dto: UpdatePasswordDto) {
@@ -68,7 +70,7 @@ export class UsersService {
     dataBase.comments = (dataBase.comments as Comment[]).filter((item) => {
       return item.authorId !== userId;
     });
-    (dataBase.articles as Article[]).forEach((item) => {
+    dataBase.articles.forEach((item) => {
       if (item.authorId === userId) item.authorId = null;
     });
     return user;

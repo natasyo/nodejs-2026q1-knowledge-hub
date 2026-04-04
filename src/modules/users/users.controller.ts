@@ -29,13 +29,13 @@ export class UsersController {
   @Get(':id')
   @HttpCode(200)
   getUserById(@Param('id') id: string) {
-    return this.usersService.getUserById(id);
+    return this.usersService.getUserById(id).userData;
   }
 
   @Post()
   @HttpCode(201)
   createUser(@Body() user: CreateUserDto) {
-    return this.usersService.addUser(user);
+    return this.usersService.addUser(user).userData;
   }
   @Put(':id')
   @HttpCode(200)
@@ -49,8 +49,7 @@ export class UsersController {
 
   @Delete(':id')
   @HttpCode(204)
-  deleteUser(@Param('id') id: string, @Res() res: Response) {
+  deleteUser(@Param('id') id: string) {
     this.usersService.deleteUser(id);
-    return;
   }
 }

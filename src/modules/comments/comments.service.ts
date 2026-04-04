@@ -25,11 +25,9 @@ export class CommentsService {
 
   getById(id: string): Comment {
     if (!isUUID(id)) throw new BadRequestException('id must be UUID');
-    const comment = dataBase.categories.find((item) => item.id === id);
+    const comment = dataBase.comments.find((item) => item.id === id);
     if (!comment) throw new NotFoundException('comment not found');
-    return dataBase.comments.find(
-      (comment: { id: string }) => comment.id === id,
-    );
+    return comment;
   }
 
   createComment(dto: CreateCommentDto) {

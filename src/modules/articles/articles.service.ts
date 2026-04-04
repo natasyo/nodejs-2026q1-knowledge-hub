@@ -12,7 +12,7 @@ import { dataBase } from '../../core/db/db';
 
 @Injectable()
 export class ArticlesService {
-  articles: Article[] = dataBase.articles;
+  articles: Article[] = dataBase.articles as unknown as Article[];
   getArticles() {
     return dataBase.articles;
   }
@@ -25,14 +25,14 @@ export class ArticlesService {
     return article;
   }
 
-  getArticleByStatus(status: string): Article[] {
-    return dataBase.articles.filter((article: Article) => {
+  getArticleByStatus(status: string) {
+    return dataBase.articles.filter((article) => {
       return article.status === status;
     });
   }
-  getArticlesByTag(tag: string): Article[] {
-    return dataBase.articles.filter((article: Article) => {
-      return article.tags.indexOf(tag) > -1;
+  getArticlesByTag(tag: string) {
+    return dataBase.articles.filter((article) => {
+      return article.tags.includes(tag);
     });
   }
   addArticle(article: CreateArticleDto) {
