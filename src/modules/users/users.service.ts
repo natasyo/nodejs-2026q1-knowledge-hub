@@ -14,7 +14,7 @@ import { UserRole } from '../../core/types/UserRole';
 
 @Injectable()
 export class UsersService {
-  getUsers(): User[] {
+  getUsers() {
     return dataBase.users.map((password: any, ...user: any) => user);
   }
   getUserById(id: string) {
@@ -37,7 +37,6 @@ export class UsersService {
     if (newUser.role === undefined) newUser.role = UserRole.VIEWER;
     dataBase.users.push(newUser);
     const { password, ...userData } = newUser;
-    console.log(userData);
     return { userData, password };
   }
 

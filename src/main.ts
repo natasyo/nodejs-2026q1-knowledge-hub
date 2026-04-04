@@ -5,7 +5,13 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, // удалит поля, которых нет в DTO
+      forbidNonWhitelisted: true, // выдаст ошибку, если переданы лишние поля
+      transform: true,
+    }),
+  );
   const config = new DocumentBuilder()
     .setTitle('Documentation')
     .setDescription('Documentation')

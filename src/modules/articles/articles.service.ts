@@ -35,6 +35,11 @@ export class ArticlesService {
       return article.tags.includes(tag);
     });
   }
+  getArticleByCategoryId(categoryId: string) {
+    return dataBase.articles.filter((article) => {
+      return article.categoryId === categoryId;
+    });
+  }
   addArticle(article: CreateArticleDto) {
     const newUser = {
       createdAt: Date.now(),
@@ -50,7 +55,9 @@ export class ArticlesService {
     if (!isUUID(articleId)) {
       throw new BadRequestException('Invalid UUID');
     }
+
     const article = dataBase.articles.find((item) => item.id === articleId);
+    console.log(article);
     if (!article) throw new NotFoundException('Article not found');
     const updateArticle = {
       ...article,
@@ -62,7 +69,7 @@ export class ArticlesService {
       if (item.id === articleId) return updateArticle;
       return item;
     });
-    return article;
+    return updateArticle;
   }
   deleteArticle(articleId: string) {
     if (!isUUID(articleId)) {
@@ -72,6 +79,9 @@ export class ArticlesService {
     if (!article) throw new NotFoundException('Article not found');
     dataBase.articles = dataBase.articles.filter(
       (article) => article.id !== articleId,
+    );
+    dataBase.comments = dataBase.comments.filter(
+      (comment) => comment.articleId !== articleId,
     );
     return article;
   }

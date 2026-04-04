@@ -8,10 +8,8 @@ import {
   Post,
   Put,
   Query,
-  Res,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
-import { Response } from 'express';
 import { CreateArticleDto } from './articleDto/create-article.dto';
 import { UpdateArticleDto } from './articleDto/update-article.dto';
 
@@ -24,16 +22,15 @@ export class ArticlesController {
   getArticleByStatus(
     @Query('status') status: string,
     @Query('tag') tag: string,
+    @Query('categoryId') categoryId: string,
   ) {
     if (status) return this.articlesService.getArticleByStatus(status);
-    else return this.articlesService.getArticlesByTag(tag);
-  }
-
-  @Get()
-  @HttpCode(200)
-  articles() {
+    if (tag) return this.articlesService.getArticlesByTag(tag);
+    if (categoryId)
+      return this.articlesService.getArticleByCategoryId(categoryId);
     return this.articlesService.getArticles();
   }
+
   @HttpCode(200)
   @Get(':id')
   article(@Param('id') id: string) {
@@ -41,16 +38,15 @@ export class ArticlesController {
   }
 
   @Post()
-  addArticle(@Body() data: CreateArticleDto, @Res() res: Response) {
-    return res.status(201).json(this.articlesService.addArticle(data));
+  @HttpCode(201)
+  addArticle(@Body() data: CreateArticleDto) {
+    return this.articlesService.addArticle(data);
   }
+
   @Put(':id')
-  changeArticle(
-    @Param('id') id: string,
-    @Res() res: Response,
-    @Body() dto: UpdateArticleDto,
-  ) {
-    res.status(200).json(this.articlesService.updateArticle(id, dto));
+  @HttpCode(200)
+  changeArticle(@Param('id') id: string, @Body() dto: UpdateArticleDto) {
+    return this.articlesService.updateArticle(id, dto);
   }
   @Delete(':id')
   @HttpCode(204)

@@ -6,10 +6,6 @@ import {
   Param,
   Post,
   Put,
-  Req,
-  Res,
-  Headers,
-  UnauthorizedException,
   HttpCode,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
