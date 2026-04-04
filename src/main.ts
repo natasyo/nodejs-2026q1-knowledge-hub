@@ -17,7 +17,7 @@ async function bootstrap() {
     .setDescription('Documentation')
     .build();
   const doc = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, doc);
+  SwaggerModule.setup('doc', app, doc);
   await app.listen(4000);
 }
 bootstrap();
