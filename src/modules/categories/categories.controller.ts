@@ -7,19 +7,21 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Res,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { Response } from 'express';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { SortOrderDto } from '../dto/sort-order.dto';
 
 @Controller('category')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
   @Get()
-  getCategories(@Res() res: Response) {
-    const result = this.categoriesService.getAllCategories();
+  getCategories(@Res() res: Response, @Query() query: SortOrderDto) {
+    const result = this.categoriesService.getAllCategories(query);
     res.status(200).json(result);
   }
 

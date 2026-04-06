@@ -10,14 +10,17 @@ import {
 } from '@nestjs/common';
 import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
+import { QueryComments } from './dto/query-comments.dto';
+import { Order } from '../dto/sort-order.dto';
 
 @Controller('comment')
 export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
   @Get()
   @HttpCode(200)
-  getComments(@Query('articleId') articleId: string) {
-    return this.commentsService.getComments(articleId);
+  getComments(@Query() query: QueryComments) {
+    const { articleId, sortBy, order } = query;
+    return this.commentsService.getComments(articleId, sortBy, order);
   }
 
   @Get(':id')

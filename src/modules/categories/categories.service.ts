@@ -8,10 +8,21 @@ import { isUUID } from 'class-validator';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { dataBase } from '../../core/db/db';
+import { Order, SortOrderDto } from '../dto/sort-order.dto';
+import { sortArray } from '../../core/functions/sort';
 
 @Injectable()
 export class CategoriesService {
-  getAllCategories() {
+  getAllCategories(querySort?: SortOrderDto) {
+    if (querySort && querySort.sortBy) {
+      if (querySort.sortBy) {
+        return sortArray(
+          dataBase.categories,
+          querySort.sortBy,
+          querySort.order ?? Order.ASC,
+        );
+      }
+    }
     return dataBase.categories;
   }
 

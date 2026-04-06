@@ -12,6 +12,8 @@ import {
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './articleDto/create-article.dto';
 import { UpdateArticleDto } from './articleDto/update-article.dto';
+import { SortOrderDto } from '../dto/sort-order.dto';
+import { ArticleQueryDto } from './articleDto/article-query.dto';
 
 @Controller('article')
 export class ArticlesController {
@@ -19,16 +21,18 @@ export class ArticlesController {
 
   @Get()
   @HttpCode(200)
-  getArticleByStatus(
-    @Query('status') status: string,
-    @Query('tag') tag: string,
-    @Query('categoryId') categoryId: string,
-  ) {
-    if (status) return this.articlesService.getArticleByStatus(status);
-    if (tag) return this.articlesService.getArticlesByTag(tag);
+  getArticleByStatus(@Query() query: ArticleQueryDto) {
+    const { status, tag, categoryId, sortBy, order } = query;
+    if (status)
+      return this.articlesService.getArticleByStatus(status, sortBy, order);
+    if (tag) return this.articlesService.getArticlesByTag(tag, sortBy, order);
     if (categoryId)
-      return this.articlesService.getArticleByCategoryId(categoryId);
-    return this.articlesService.getArticles();
+      return this.articlesService.getArticleByCategoryId(
+        categoryId,
+        sortBy,
+        order,
+      );
+    return this.articlesService.getArticles(sortBy, order);
   }
 
   @HttpCode(200)

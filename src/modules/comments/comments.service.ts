@@ -9,18 +9,24 @@ import { randomUUID } from 'node:crypto';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { isUUID } from 'class-validator';
 import { dataBase } from '../../core/db/db';
+import { Order } from '../dto/sort-order.dto';
+import { sortArray } from '../../core/functions/sort';
 
 @Injectable()
 export class CommentsService {
   comments: Comment[] = dataBase.comments;
-  getComments(articleId: string) {
+  getComments(articleId: string, sortBy?: string, order?: Order) {
     if (!isUUID(articleId)) {
       throw new BadRequestException('Invalid UUID');
     }
 
-    return dataBase.comments.filter((comment) => {
+    const result = dataBase.comments.filter((comment) => {
       return comment.articleId === articleId || comment.id === articleId;
     });
+    if (sortBy) {
+      return sortArray(result, sortBy, order ?? Order.ASC);
+    }
+    return result;
   }
 
   getById(id: string): Comment {

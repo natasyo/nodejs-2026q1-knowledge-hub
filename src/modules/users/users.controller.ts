@@ -7,18 +7,20 @@ import {
   Post,
   Put,
   HttpCode,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
+import { SortOrderDto } from '../dto/sort-order.dto';
 
 @Controller('user')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  getUser() {
-    return this.usersService.getUsers();
+  getUser(@Query() query: SortOrderDto) {
+    return this.usersService.getUsers(query);
   }
 
   @Get(':id')

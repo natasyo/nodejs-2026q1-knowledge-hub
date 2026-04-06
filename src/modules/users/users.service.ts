@@ -11,10 +11,21 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { dataBase } from '../../core/db/db';
 import { UserRole } from '../../core/types/UserRole';
+import { Order, SortOrderDto } from '../dto/sort-order.dto';
+import { sortArray } from '../../core/functions/sort';
 
 @Injectable()
 export class UsersService {
-  getUsers() {
+  getUsers(querySort?: SortOrderDto) {
+    if (querySort && querySort.sortBy) {
+      if (querySort.sortBy) {
+        return sortArray(
+          dataBase.users.map((password: any, ...user: any) => user),
+          querySort.sortBy,
+          querySort.order ?? Order.ASC,
+        );
+      }
+    }
     return dataBase.users.map((password: any, ...user: any) => user);
   }
   getUserById(id: string) {

@@ -9,11 +9,17 @@ import { isUUID } from 'class-validator';
 import { CreateArticleDto } from './articleDto/create-article.dto';
 import { UpdateArticleDto } from './articleDto/update-article.dto';
 import { dataBase } from '../../core/db/db';
+import { sortArray } from '../../core/functions/sort';
+import { Order } from '../dto/sort-order.dto';
 
 @Injectable()
 export class ArticlesService {
   articles: Article[] = dataBase.articles as unknown as Article[];
-  getArticles() {
+  getArticles(sortBy?: string, order?: Order) {
+    if (sortBy) {
+      return sortArray(dataBase.articles, sortBy, order ?? Order.ASC);
+    }
+
     return dataBase.articles;
   }
   getArticleById(id: string) {
@@ -25,17 +31,26 @@ export class ArticlesService {
     return article;
   }
 
-  getArticleByStatus(status: string) {
+  getArticleByStatus(status: string, sortBy?: string, order?: Order) {
+    if (sortBy) {
+      return sortArray(dataBase.articles, sortBy, order ?? Order.ASC);
+    }
     return dataBase.articles.filter((article) => {
       return article.status === status;
     });
   }
-  getArticlesByTag(tag: string) {
+  getArticlesByTag(tag: string, sortBy?: string, order?: Order) {
+    if (sortBy) {
+      return sortArray(dataBase.articles, sortBy, order ?? Order.ASC);
+    }
     return dataBase.articles.filter((article) => {
       return article.tags.includes(tag);
     });
   }
-  getArticleByCategoryId(categoryId: string) {
+  getArticleByCategoryId(categoryId: string, sortBy?: string, order?: Order) {
+    if (sortBy) {
+      return sortArray(dataBase.articles, sortBy, order ?? Order.ASC);
+    }
     return dataBase.articles.filter((article) => {
       return article.categoryId === categoryId;
     });
