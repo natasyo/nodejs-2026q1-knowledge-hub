@@ -1,35 +1,14 @@
-version: "3.9"
-
 networks:
-  knowledge_hub_net:
+  app-network:
     driver: bridge
 
 volumes:
-  db-data:
+  postgres-data:
 
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    depends_on:
-      - db
-    ports:
-      - "3000:4000"
-    env_file:
-      - .env
-    networks:
-      - knowledge_hub_net
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:4000/ || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-    restart: on-failure
-
   db:
     image: postgres:16-alpine
+    restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -37,22 +16,34 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - db-data:/var/lib/postgresql/data
-    networks:
-      - knowledge_hub_net
+      - postgres-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
-      interval: 10s
+      interval: 5s
       timeout: 5s
       retries: 5
-      start_period: 10s
-    restart: unless-stopped
+    networks:
+      - app-network
+
+  app:
+    build: .
+    restart: on-failure
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${PORT:-4000}:${PORT:-4000}"
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:4000/ || exit 1"]
+    networks:
+      - app-network
 
   adminer:
     image: adminer
+    profiles: ["debug"]
     ports:
       - "8080:8080"
     networks:
-      - knowledge_hub_net
-    profiles:
-      - debug
+      - app-network
