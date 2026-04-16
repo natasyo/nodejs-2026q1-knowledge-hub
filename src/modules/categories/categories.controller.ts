@@ -18,39 +18,39 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
   @Get()
-  getCategories(@Res() res: Response) {
-    const result = this.categoriesService.getAllCategories();
+  async getCategories(@Res() res: Response) {
+    const result = await this.categoriesService.getAllCategories();
     res.status(200).json(result);
   }
 
   @Get(':id')
-  getCategory(@Res() res: Response, @Param('id') id: string) {
-    res.status(200).json(this.categoriesService.getCategory(id));
+  async getCategory(@Res() res: Response, @Param('id') id: string) {
+    res.status(200).json(await this.categoriesService.getCategory(id));
   }
 
   @Post()
-  createCategory(
+  async createCategory(
     @Res() res: Response,
     @Body() createCategoryDto: CreateCategoryDto,
   ) {
     res
       .status(201)
-      .json(this.categoriesService.createCategory(createCategoryDto));
+      .json(await this.categoriesService.createCategory(createCategoryDto));
   }
 
   @Put(':id')
-  updateCategory(
+  async updateCategory(
     @Res() res: Response,
     @Param('id') id: string,
     @Body() dto: UpdateCategoryDto,
   ) {
-    res.status(200).json(this.categoriesService.updateCategory(id, dto));
+    res.status(200).json(await this.categoriesService.updateCategory(id, dto));
   }
 
   @Delete(':id')
   @HttpCode(204)
-  deleteCategory(@Param('id') id: string) {
-    this.categoriesService.deleteCategory(id);
+  async deleteCategory(@Param('id') id: string) {
+    await this.categoriesService.deleteCategory(id);
     return;
   }
 }

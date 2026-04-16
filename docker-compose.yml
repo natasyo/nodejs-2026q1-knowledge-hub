@@ -16,7 +16,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - ./.env:/app/.env
+      - ./.env.local:/app/.env.local
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
@@ -35,7 +35,7 @@ services:
     ports:
       - "${PORT:-4000}:${PORT:-4000}"
     env_file:
-      - .env
+      - .env.docker
     healthcheck:
       test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:4000/ || exit 1"]
     networks:

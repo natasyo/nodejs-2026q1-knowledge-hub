@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class UpdateCategoryDto {
   @IsString()
@@ -7,4 +7,11 @@ export class UpdateCategoryDto {
   @IsString()
   @IsOptional()
   description: string;
+
+  @IsOptional()
+  @IsUUID()
+  categoryId?: string;
+  @IsOptional()
+  @IsUUID()
+  authorId?: string;
 }

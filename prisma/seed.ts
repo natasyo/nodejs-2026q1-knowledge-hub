@@ -1,17 +1,17 @@
-// import 'dotenv/config';
 import { Pool } from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient, Status, Role } from '@prisma/client';
+import { PrismaClient, Role, Status } from '@prisma/client';
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
-
+const connectionString = process.env.DATABASE_URL;
+const pool = new Pool({ connectionString });
 const adapter = new PrismaPg(pool);
+
+// Передаем адаптер вместо accelerateUrl
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  // साफ start (optional)
+  //  start (optional)
+
   await prisma.comment.deleteMany();
   await prisma.article.deleteMany();
   await prisma.tag.deleteMany();
@@ -64,7 +64,7 @@ async function main() {
         title: 'Getting started with NestJS',
         content: 'NestJS is a progressive Node.js framework...',
         status: Status.PUBLISHED,
-        userId: admin.id,
+        authorId: admin.id,
         categoryId: tech.id,
         tags: {
           connect: [{ id: tags[0].id }, { id: tags[2].id }],
@@ -77,7 +77,7 @@ async function main() {
         title: 'Docker basics',
         content: 'Docker helps you containerize applications...',
         status: Status.PUBLISHED,
-        userId: editor.id,
+        authorId: editor.id,
         categoryId: tech.id,
         tags: {
           connect: [{ id: tags[1].id }],
@@ -90,7 +90,7 @@ async function main() {
         title: 'The future of space travel',
         content: 'Exploring Mars and beyond...',
         status: Status.DRAFT,
-        userId: admin.id,
+        authorId: admin.id,
         categoryId: science.id,
         tags: {
           connect: [{ id: tags[4].id }],
@@ -103,7 +103,7 @@ async function main() {
         title: 'Healthy lifestyle tips',
         content: 'Eat well, sleep well...',
         status: Status.PUBLISHED,
-        userId: editor.id,
+        authorId: editor.id,
         categoryId: lifestyle.id,
         tags: {
           connect: [{ id: tags[3].id }],
@@ -116,7 +116,7 @@ async function main() {
         title: 'Prisma ORM guide',
         content: 'Prisma makes database access easy...',
         status: Status.ARCHIVED,
-        userId: admin.id,
+        authorId: admin.id,
         categoryId: tech.id,
         tags: {
           connect: [{ id: tags[2].id }],
@@ -130,21 +130,21 @@ async function main() {
     prisma.comment.create({
       data: {
         content: 'Great article!',
-        userId: editor.id,
+        authorId: editor.id,
         articleId: articles[0].id,
       },
     }),
     prisma.comment.create({
       data: {
         content: 'Very helpful, thanks!',
-        userId: admin.id,
+        authorId: admin.id,
         articleId: articles[1].id,
       },
     }),
     prisma.comment.create({
       data: {
         content: 'Looking forward to more content like this.',
-        userId: editor.id,
+        authorId: editor.id,
         articleId: articles[3].id,
       },
     }),

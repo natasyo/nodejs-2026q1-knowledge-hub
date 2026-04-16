@@ -8,7 +8,7 @@ import {
   Put,
   HttpCode,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
+import UsersService from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 
@@ -17,28 +17,28 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  getUser() {
-    return this.usersService.getUsers();
+  async getUser() {
+    return await this.usersService.getUsers();
   }
 
   @Get(':id')
   @HttpCode(200)
-  getUserById(@Param('id') id: string) {
-    return this.usersService.getUserById(id).userData;
+  async getUserById(@Param('id') id: string) {
+    return await this.usersService.getUserById(id);
   }
 
   @Post()
   @HttpCode(201)
   createUser(@Body() user: CreateUserDto) {
-    return this.usersService.addUser(user).userData;
+    return this.usersService.addUser(user);
   }
   @Put(':id')
   @HttpCode(200)
-  updatePassword(
+  async updatePassword(
     @Param('id') id: string,
     @Body() updatePasswordDto: UpdatePasswordDto,
   ) {
-    this.usersService.updatePassword(id, updatePasswordDto);
+    await this.usersService.updatePassword(id, updatePasswordDto);
     return;
   }
 

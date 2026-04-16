@@ -4,74 +4,102 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { User, Comment } from '../../core/types/data.types';
-import { randomUUID } from 'node:crypto';
 import { isUUID } from 'class-validator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
-import { dataBase } from '../../core/db/db';
-import { UserRole } from '../../core/types/UserRole';
+import { PrismaService } from '../prisma/prisma.service';
+import { Role } from '@prisma/client';
 
 @Injectable()
-export class UsersService {
-  getUsers() {
-    return dataBase.users.map((password: any, ...user: any) => user);
+class UsersService {
+  constructor(private readonly prismaService: PrismaService) {}
+  async getUsers() {
+    return this.prismaService.user.findMany({
+      select: {
+        login: true,
+        id: true,
+        role: true,
+        updatedAt: true,
+        createdAt: true,
+      },
+    });
   }
-  getUserById(id: string) {
+  async getUserById(id: string) {
     if (!isUUID(id)) {
       throw new BadRequestException('Invalid UUID');
     }
-    const user = dataBase.users.find((user) => user.id === id);
+    const user = await this.prismaService.user.findUnique({
+      where: { id },
+      select: {
+        login: true,
+        id: true,
+        role: true,
+        updatedAt: true,
+        createdAt: true,
+      },
+    });
     if (!user) throw new NotFoundException('user not found');
-    const { password, ...userData } = user;
-    return { userData, password };
+    return user;
   }
-  addUser(user: CreateUserDto) {
-    const id = randomUUID();
-    const newUser = {
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-      id,
-      ...user,
-    } as User;
-    if (newUser.role === undefined) newUser.role = UserRole.VIEWER;
-    dataBase.users.push(newUser);
-    const { password, ...userData } = newUser;
-    return { userData, password };
+  async addUser(user: CreateUserDto) {
+    return this.prismaService.user.create({
+      data: {
+        login: user.login,
+        password: user.password,
+        role: user.role,
+      },
+      select: {
+        login: true,
+        id: true,
+        role: true,
+        updatedAt: true,
+        createdAt: true,
+      },
+    });
   }
 
-  updatePassword(userId: string, dto: UpdatePasswordDto) {
+  async updatePassword(userId: string, dto: UpdatePasswordDto) {
     if (!isUUID(userId)) {
       throw new BadRequestException('Invalid UUID');
     }
-    const user = dataBase.users.find((user) => user.id === userId);
+    const user = await this.prismaService.user.findUnique({
+      where: { id: userId },
+    });
     if (!user) throw new NotFoundException('user not found');
     if (user.password !== dto.oldPassword) {
       throw new ForbiddenException('Is not valid old password');
     }
-    dataBase.users.forEach((item) => {
-      if (item.id === userId) item.password = dto.newPassword;
-      item.updatedAt = Date.now();
-    });
-    return user;
+    try {
+      this.prismaService.user.update({
+        where: { id: userId },
+        data: {
+          password: dto.newPassword,
+        },
+      });
+      return user;
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException(`User with ID ${userId} not found`);
+      }
+      throw error;
+    }
   }
   deleteUser(userId: string) {
     if (!isUUID(userId)) {
       throw new BadRequestException('Invalid user id');
     }
-    const user = dataBase.users.find(
-      (user: { id: string }) => user.id === userId,
-    );
-    if (!user) throw new NotFoundException('user not found');
-    dataBase.users = dataBase.users.filter(
-      (user: { id: string }) => user.id !== userId,
-    );
-    dataBase.comments = (dataBase.comments as Comment[]).filter((item) => {
-      return item.authorId !== userId;
-    });
-    dataBase.articles.forEach((item) => {
-      if (item.authorId === userId) item.authorId = null;
-    });
-    return user;
+    try {
+      this.prismaService.user.delete({
+        where: { id: userId },
+      });
+      return true;
+    } catch (error) {
+      if (error.code === 'P2025') {
+        throw new NotFoundException(`User with ID ${userId} not found`);
+      }
+      throw error;
+    }
   }
 }
+
+export default UsersService;

@@ -5,7 +5,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { UserRole } from '../../../core/types/UserRole';
+import { Role } from '@prisma/client';
 export class CreateUserDto {
   @IsString()
   @MinLength(3, { message: 'Login must be at least 3 characters' })
@@ -17,6 +17,6 @@ export class CreateUserDto {
   password: string;
 
   @IsOptional()
-  @IsEnum(UserRole, { message: 'Role will be admin, editor, viewer' })
-  role?: UserRole;
+  @IsEnum(Role, { message: 'Role will be admin, editor, viewer' })
+  role?: Role;
 }

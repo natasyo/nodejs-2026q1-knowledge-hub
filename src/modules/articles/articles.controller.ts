@@ -8,10 +8,12 @@ import {
   Post,
   Put,
   Query,
+  Res,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './articleDto/create-article.dto';
 import { UpdateArticleDto } from './articleDto/update-article.dto';
+import { Response } from 'express';
 
 @Controller('article')
 export class ArticlesController {
@@ -45,13 +47,19 @@ export class ArticlesController {
 
   @Put(':id')
   @HttpCode(200)
-  changeArticle(@Param('id') id: string, @Body() dto: UpdateArticleDto) {
-    return this.articlesService.updateArticle(id, dto);
+  async changeArticle(
+    // @Res() res: Response,
+    @Param('id') id: string,
+    @Body() dto: UpdateArticleDto,
+  ) {
+    // const result = await this.articlesService.updateArticle(id, dto);
+    // res.json(result);
+    return await this.articlesService.updateArticle(id, dto);
   }
   @Delete(':id')
   @HttpCode(204)
-  deleteArticle(@Param('id') id: string) {
-    this.articlesService.deleteArticle(id);
+  async deleteArticle(@Param('id') id: string) {
+    await this.articlesService.deleteArticle(id);
     return;
   }
 }

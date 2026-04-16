@@ -16,26 +16,26 @@ export class CommentsController {
   constructor(private readonly commentsService: CommentsService) {}
   @Get()
   @HttpCode(200)
-  getComments(@Query('articleId') articleId: string) {
-    return this.commentsService.getComments(articleId);
+  async getComments(@Query('articleId') articleId: string) {
+    return await this.commentsService.getComments(articleId);
   }
 
   @Get(':id')
   @HttpCode(200)
-  getCommentsById(@Param('id') id: string) {
-    return this.commentsService.getById(id);
+  async getCommentsById(@Param('id') id: string) {
+    return await this.commentsService.getById(id);
   }
 
   @Post()
   @HttpCode(201)
-  create(@Body() createCommentDto: CreateCommentDto) {
-    return this.commentsService.createComment(createCommentDto);
+  async create(@Body() createCommentDto: CreateCommentDto) {
+    return await this.commentsService.createComment(createCommentDto);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  delete(@Param('id') id: string) {
-    this.commentsService.deleteComment(id);
+  async delete(@Param('id') id: string) {
+    await this.commentsService.deleteComment(id);
     return;
   }
 }
