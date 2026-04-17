@@ -7,6 +7,7 @@ import { CategoriesModule } from './modules/categories/categories.module';
 import { CommentsModule } from './modules/comments/comments.module';
 
 import { PrismaModule } from './modules/prisma/prisma.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { PrismaModule } from './modules/prisma/prisma.module';
     CategoriesModule,
     CommentsModule,
     PrismaModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
