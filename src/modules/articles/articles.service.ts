@@ -72,6 +72,7 @@ export class ArticlesService {
           category: { connect: { id: article.categoryId } },
         }),
         title: article.title,
+        status: article.status.toUpperCase() as Status,
       },
     });
   }
