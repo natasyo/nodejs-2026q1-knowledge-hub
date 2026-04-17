@@ -8,7 +8,6 @@ import { isUUID } from 'class-validator';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import { Role } from '@prisma/client';
 
 @Injectable()
 class UsersService {
@@ -42,20 +41,27 @@ class UsersService {
     return user;
   }
   async addUser(user: CreateUserDto) {
-    return this.prismaService.user.create({
-      data: {
-        login: user.login,
-        password: user.password,
-        role: user.role,
-      },
-      select: {
-        login: true,
-        id: true,
-        role: true,
-        updatedAt: true,
-        createdAt: true,
-      },
-    });
+    try {
+      return await this.prismaService.user.create({
+        data: {
+          login: user.login,
+          password: user.password,
+          role: user.role,
+        },
+        select: {
+          login: true,
+          id: true,
+          role: true,
+          updatedAt: true,
+          createdAt: true,
+        },
+      });
+    } catch (e) {
+      if (e.code === 'P2002') {
+        throw new NotFoundException(`Login ${user.login} exists`);
+      }
+      throw e;
+    }
   }
 
   async updatePassword(userId: string, dto: UpdatePasswordDto) {
