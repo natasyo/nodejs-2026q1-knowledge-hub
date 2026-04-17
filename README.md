@@ -4,7 +4,11 @@
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
+- Load docker image
 
+```
+docker pull tasyo/nodejs-2026q1-knowledge-hub:latest
+```
 ## Downloading
 
 ```
@@ -13,7 +17,7 @@ git clone {repository URL}
 
 ## go to the Task-5 branch
 ```
-git checkout dev-task-5
+git checkout dev-task-6
 ```
 
 
