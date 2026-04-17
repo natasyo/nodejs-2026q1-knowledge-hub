@@ -15,7 +15,7 @@ docker pull tasyo/nodejs-2026q1-knowledge-hub:latest
 git clone {repository URL}
 ```
 
-## go to the Task-5 branch
+## go to the Task-6 branch
 ```
 git checkout dev-task-6
 ```
