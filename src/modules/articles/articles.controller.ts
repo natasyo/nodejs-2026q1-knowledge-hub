@@ -42,8 +42,8 @@ export class ArticlesController {
 
   @Post()
   @HttpCode(201)
-  addArticle(@Body() data: CreateArticleDto) {
-    return this.articlesService.addArticle(data);
+  async addArticle(@Body() data: CreateArticleDto) {
+    return await this.articlesService.addArticle(data);
   }
 
   @Put(':id')

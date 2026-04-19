@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Head,
   HttpCode,
   Param,
   Post,
@@ -15,7 +16,9 @@ import { Response } from 'express';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth('JWT-auth')
 @UseGuards(JwtAuthGuard)
 @Controller('category')
 export class CategoriesController {

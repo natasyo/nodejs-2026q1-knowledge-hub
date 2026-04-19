@@ -6,7 +6,7 @@ import {
   IsString,
   IsUUID,
 } from 'class-validator';
-import { ArticleStatus } from '../../../core/types/articleStatus';
+import { Status } from '@prisma/client';
 
 export class CreateArticleDto {
   @IsNotEmpty()
@@ -17,8 +17,8 @@ export class CreateArticleDto {
   @IsString()
   content: string;
 
-  @IsEnum(ArticleStatus)
-  status: ArticleStatus;
+  @IsEnum(Status)
+  status: Status;
 
   @IsArray()
   @IsString({ each: true })
