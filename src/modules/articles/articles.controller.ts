@@ -43,6 +43,7 @@ export class ArticlesController {
   @Post()
   @HttpCode(201)
   async addArticle(@Body() data: CreateArticleDto) {
+    console.log('create');
     return await this.articlesService.addArticle(data);
   }
 

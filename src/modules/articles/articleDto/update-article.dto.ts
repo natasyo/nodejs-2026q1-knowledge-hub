@@ -1,5 +1,5 @@
 import { IsArray, IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
-import { ArticleStatus } from '../../../core/types/articleStatus';
+import { Transform } from 'class-transformer';
 import { Status } from '@prisma/client';
 export class UpdateArticleDto {
   @IsString()
@@ -12,6 +12,7 @@ export class UpdateArticleDto {
 
   @IsEnum(Status)
   @IsOptional()
+  @Transform(({ value }) => value?.toUpperCase())
   status: Status;
 
   @IsUUID()

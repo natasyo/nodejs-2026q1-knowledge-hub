@@ -64,6 +64,7 @@ export class ArticlesService {
     });
   }
   async addArticle(article: CreateArticleDto) {
+    console.log('create');
     const result = await this.prismaService.article.create({
       data: {
         content: article.content,
@@ -91,7 +92,6 @@ export class ArticlesService {
         tags: true,
       },
     });
-    console.log('create--------------------------', result.id);
     return {
       ...result,
       status: result.status.toLowerCase(),
@@ -105,6 +105,12 @@ export class ArticlesService {
       throw new BadRequestException('Invalid UUID');
     }
     console.log('articleId', articleId);
+    const upArt = await this.prismaService.article.findUnique({
+      where: {
+        id: articleId,
+      },
+    });
+    console.log('upArt', upArt);
     try {
       return await this.prismaService.article.update({
         where: {
