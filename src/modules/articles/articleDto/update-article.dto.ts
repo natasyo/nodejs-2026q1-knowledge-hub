@@ -1,5 +1,6 @@
 import { IsArray, IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
 import { ArticleStatus } from '../../../core/types/articleStatus';
+import { Status } from '@prisma/client';
 export class UpdateArticleDto {
   @IsString()
   @IsOptional()
@@ -9,9 +10,9 @@ export class UpdateArticleDto {
   @IsOptional()
   content: string;
 
-  @IsEnum(ArticleStatus)
+  @IsEnum(Status)
   @IsOptional()
-  status: ArticleStatus;
+  status: Status;
 
   @IsUUID()
   @IsOptional()

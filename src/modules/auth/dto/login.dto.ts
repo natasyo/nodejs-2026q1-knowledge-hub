@@ -1,5 +1,5 @@
 import { IsString, MaxLength, MinLength } from 'class-validator';
-export class SignupDto {
+export class LoginDto {
   @IsString()
   @MinLength(3, { message: 'Login must be at least 3 characters' })
   login: string;

@@ -25,6 +25,7 @@ export class ArticlesService {
     const article = await this.prismaService.article.findUnique({
       where: { id },
     });
+    console.log('article', article);
     if (!article) throw new NotFoundException('Article not found');
     return article;
   }
@@ -41,6 +42,7 @@ export class ArticlesService {
       where: { name: tag },
     });
     if (!tagObj) throw new NotFoundException('Tag not found');
+
     return this.prismaService.article.findMany({
       where: {
         tags: {
@@ -62,7 +64,7 @@ export class ArticlesService {
     });
   }
   async addArticle(article: CreateArticleDto) {
-    return this.prismaService.article.create({
+    const result = await this.prismaService.article.create({
       data: {
         content: article.content,
         ...(article.authorId && {
@@ -72,22 +74,43 @@ export class ArticlesService {
           category: { connect: { id: article.categoryId } },
         }),
         title: article.title,
-        status: article.status.toUpperCase() as Status,
+        ...(article.status && {
+          status: article.status.toUpperCase() as Status,
+        }),
+        ...(article.tags &&
+          Array.isArray(article.tags) && {
+            tags: {
+              connectOrCreate: article.tags.map((tag) => ({
+                where: { name: tag },
+                create: { name: tag },
+              })),
+            },
+          }),
+      },
+      include: {
+        tags: true,
       },
     });
+    console.log('create--------------------------', result.id);
+    return {
+      ...result,
+      status: result.status.toLowerCase(),
+      createdAt: result.createdAt.getTime(),
+      updatedAt: result.updatedAt.getTime(),
+    };
   }
 
   async updateArticle(articleId: string, dto: UpdateArticleDto) {
     if (!isUUID(articleId)) {
       throw new BadRequestException('Invalid UUID');
     }
+    console.log('articleId', articleId);
     try {
       return await this.prismaService.article.update({
         where: {
           id: articleId,
         },
         data: {
-          title: dto.title,
           content: dto.content,
           ...(dto.authorId && {
             author: { connect: { id: dto.authorId } },
@@ -95,12 +118,30 @@ export class ArticlesService {
           ...(dto.categoryId && {
             category: { connect: { id: dto.categoryId } },
           }),
-          tags: dto.tags ? { set: dto.tags.map((id) => ({ id })) } : undefined,
+          title: dto.title,
+          ...(dto.status && { status: dto.status.toUpperCase() as Status }),
+          ...(dto.tags &&
+            Array.isArray(dto.tags) && {
+              tags: {
+                set: [],
+                connectOrCreate: dto.tags.map((tag) => ({
+                  where: { name: tag },
+                  create: { name: tag },
+                })),
+              },
+            }),
+        },
+        include: {
+          tags: true,
         },
       });
     } catch (error) {
-      if (error.code === 'P2025')
+      console.log(error);
+      if (error.code === 'P2025') {
+        console.log('not found');
         throw new NotFoundException(`Article with ID ${articleId} not found`);
+      }
+
       throw error;
     }
   }

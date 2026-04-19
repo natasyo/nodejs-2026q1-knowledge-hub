@@ -8,13 +8,14 @@ import {
   Post,
   Put,
   Query,
-  Res,
+  UseGuards,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './articleDto/create-article.dto';
 import { UpdateArticleDto } from './articleDto/update-article.dto';
-import { Response } from 'express';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('article')
 export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
@@ -41,8 +42,8 @@ export class ArticlesController {
 
   @Post()
   @HttpCode(201)
-  addArticle(@Body() data: CreateArticleDto) {
-    return this.articlesService.addArticle(data);
+  async addArticle(@Body() data: CreateArticleDto) {
+    return await this.articlesService.addArticle(data);
   }
 
   @Put(':id')
