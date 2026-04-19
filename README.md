@@ -4,12 +4,22 @@
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
+- Load docker image
 
+```
+docker pull tasyo/nodejs-2026q1-knowledge-hub:latest
+```
 ## Downloading
 
 ```
 git clone {repository URL}
 ```
+
+## go to the Task-6 branch
+```
+git checkout dev-task-6
+```
+
 
 ## Installing NPM modules
 
@@ -26,6 +36,13 @@ npm start
 After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
+
+
+
+## Open swagger
+
+http://localhost:4000/doc
+
 
 ## Testing
 
