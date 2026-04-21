@@ -8,12 +8,15 @@ import {
   Post,
   Put,
   Query,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './articleDto/create-article.dto';
 import { UpdateArticleDto } from './articleDto/update-article.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Response } from 'express';
+import { GetArticlesQueryDto } from './articleDto/get-articles-query.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('article')
@@ -22,15 +25,12 @@ export class ArticlesController {
 
   @Get()
   @HttpCode(200)
-  getArticleByStatus(
-    @Query('status') status: string,
-    @Query('tag') tag: string,
-    @Query('categoryId') categoryId: string,
-  ) {
-    if (status) return this.articlesService.getArticleByStatus(status);
-    if (tag) return this.articlesService.getArticlesByTag(tag);
-    if (categoryId)
-      return this.articlesService.getArticleByCategoryId(categoryId);
+  getArticleByStatus(@Query() query: GetArticlesQueryDto) {
+    if (query.status)
+      return this.articlesService.getArticleByStatus(query.status);
+    if (query.tag) return this.articlesService.getArticlesByTag(query.tag);
+    if (query.categoryId)
+      return this.articlesService.getArticleByCategoryId(query.categoryId);
     return this.articlesService.getArticles();
   }
 
@@ -43,7 +43,6 @@ export class ArticlesController {
   @Post()
   @HttpCode(201)
   async addArticle(@Body() data: CreateArticleDto) {
-    console.log('create');
     return await this.articlesService.addArticle(data);
   }
 
@@ -53,10 +52,10 @@ export class ArticlesController {
     // @Res() res: Response,
     @Param('id') id: string,
     @Body() dto: UpdateArticleDto,
+    @Res() res: Response,
   ) {
-    // const result = await this.articlesService.updateArticle(id, dto);
-    // res.json(result);
-    return await this.articlesService.updateArticle(id, dto);
+    const result = await this.articlesService.updateArticle(id, dto);
+    res.json(result);
   }
   @Delete(':id')
   @HttpCode(204)

@@ -25,7 +25,7 @@ export class CreateArticleDto {
   @IsArray()
   @IsString({ each: true })
   @IsOptional()
-  tags: string[]; // array of tag names
+  tags?: string[]; // array of tag names
 
   @IsUUID()
   @IsOptional()

@@ -26,5 +26,5 @@ export class UpdateArticleDto {
   @IsArray()
   @IsString({ each: true })
   @IsOptional()
-  tags: string[]; // array of tag names
+  tags?: string[]; // array of tag names
 }
