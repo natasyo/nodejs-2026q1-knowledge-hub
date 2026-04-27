@@ -14,6 +14,7 @@ vi.mock('bcryptjs', () => ({
 }));
 
 import * as bcrypt from 'bcryptjs';
+import { Logger, PinoLogger } from 'nestjs-pino';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -46,6 +47,25 @@ describe('AuthService', () => {
           provide: JwtService,
           useValue: {
             sign: vi.fn(),
+          },
+        },
+        {
+          provide: Logger,
+          useValue: {
+            info: vi.fn(),
+            log: vi.fn(),
+            error: vi.fn(),
+            setContext: vi.fn(),
+          },
+        },
+        {
+          provide: PinoLogger,
+          useValue: {
+            setContext: vi.fn(),
+            info: vi.fn(),
+            error: vi.fn(),
+            warn: vi.fn(),
+            debug: vi.fn(),
           },
         },
       ],

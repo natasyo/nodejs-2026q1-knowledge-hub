@@ -8,12 +8,14 @@ import { SignupDto } from './dto/signup.dto';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './dto/login.dto';
+import { Logger } from 'nestjs-pino';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prismaService: PrismaService,
     private jwtService: JwtService,
+    private readonly logger: Logger,
   ) {}
 
   async login(userDto: LoginDto) {
@@ -90,8 +92,10 @@ export class AuthService {
       });
     } catch (e) {
       if (e.code === 'P2002') {
+        this.logger.error(`Login ${user.login} exists`);
         throw new BadRequestException(`Login ${user.login} exists`);
       }
+      this.logger.error((e as Error).message);
       throw e;
     }
   }
