@@ -26,7 +26,17 @@ git checkout dev-task-6
 ```
 npm install
 ```
+## Generate type
 
+```
+npx prisma generate
+```
+
+## Migrate prisma
+
+```
+npm run db:migrate
+```
 ## Running application
 
 ```
