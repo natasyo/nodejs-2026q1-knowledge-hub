@@ -12,6 +12,14 @@ import { PrismaService } from '../prisma/prisma.service';
 @Injectable()
 class UsersService {
   constructor(private readonly prismaService: PrismaService) {}
+  private mapUser(user) {
+    return {
+      ...user,
+      role: user.role.toLowerCase(),
+      createdAt: user.createdAt.getTime(),
+      updatedAt: user.updatedAt.getTime(),
+    };
+  }
   async getUsers() {
     return this.prismaService.user.findMany({
       select: {
@@ -38,15 +46,14 @@ class UsersService {
       },
     });
     if (!user) throw new NotFoundException('user not found');
-    return user;
+    return this.mapUser(user);
   }
   async addUser(user: CreateUserDto) {
     try {
-      return await this.prismaService.user.create({
+      const result = await this.prismaService.user.create({
         data: {
           login: user.login,
           password: user.password,
-          role: user.role,
         },
         select: {
           login: true,
@@ -56,6 +63,7 @@ class UsersService {
           createdAt: true,
         },
       });
+      return this.mapUser(result);
     } catch (e) {
       if (e.code === 'P2002') {
         throw new NotFoundException(`Login ${user.login} exists`);
@@ -76,13 +84,20 @@ class UsersService {
       throw new ForbiddenException('Is not valid old password');
     }
     try {
-      this.prismaService.user.update({
+      const result = await this.prismaService.user.update({
         where: { id: userId },
         data: {
           password: dto.newPassword,
         },
+        select: {
+          login: true,
+          id: true,
+          role: true,
+          updatedAt: true,
+          createdAt: true,
+        },
       });
-      return user;
+      return this.mapUser(result);
     } catch (error) {
       if (error.code === 'P2025') {
         throw new NotFoundException(`User with ID ${userId} not found`);
@@ -90,15 +105,14 @@ class UsersService {
       throw error;
     }
   }
-  deleteUser(userId: string) {
+  async deleteUser(userId: string) {
     if (!isUUID(userId)) {
       throw new BadRequestException('Invalid user id');
     }
     try {
-      this.prismaService.user.delete({
+      await this.prismaService.user.delete({
         where: { id: userId },
       });
-      return true;
     } catch (error) {
       if (error.code === 'P2025') {
         throw new NotFoundException(`User with ID ${userId} not found`);

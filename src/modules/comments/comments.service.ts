@@ -6,17 +6,28 @@ import {
 } from '@nestjs/common';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { isUUID } from 'class-validator';
-import { dataBase } from '../../core/db/db';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class CommentsService {
   constructor(private readonly prismaService: PrismaService) {}
+  private mapComment(comment) {
+    return {
+      ...comment,
+      createdAt: comment.createdAt.getTime(),
+      updatedAt: comment.updatedAt.getTime(),
+    };
+  }
   async getComments(articleId: string) {
     if (!isUUID(articleId)) {
       throw new BadRequestException('Invalid UUID');
     }
-    return this.prismaService.comment.findMany();
+    const result = await this.prismaService.comment.findMany({
+      where: {
+        articleId,
+      },
+    });
+    return result;
   }
 
   async getById(id: string) {
@@ -37,14 +48,20 @@ export class CommentsService {
     if (!isExistArticle)
       throw new UnprocessableEntityException('Article not found');
 
-    return this.prismaService.comment.create({
+    const result = await this.prismaService.comment.create({
       data: {
         content: dto.content,
         article: {
           connect: { id: dto.articleId },
         },
+        ...(dto.authorId && {
+          author: {
+            connect: { id: dto.authorId },
+          },
+        }),
       },
     });
+    return this.mapComment(result);
   }
 
   async deleteComment(commentId: string) {

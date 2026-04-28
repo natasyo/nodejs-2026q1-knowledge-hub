@@ -24,10 +24,15 @@ export class ArticlesService {
     }
     const article = await this.prismaService.article.findUnique({
       where: { id },
+      include: {
+        tags: true,
+      },
     });
-    console.log('article', article);
     if (!article) throw new NotFoundException('Article not found');
-    return article;
+    return {
+      ...article,
+      status: article.status.toLowerCase(),
+    };
   }
 
   async getArticleByStatus(status: string) {
@@ -91,7 +96,6 @@ export class ArticlesService {
         tags: true,
       },
     });
-    console.log('create--------------------------', result.id);
     return {
       ...result,
       status: result.status.toLowerCase(),
@@ -104,9 +108,8 @@ export class ArticlesService {
     if (!isUUID(articleId)) {
       throw new BadRequestException('Invalid UUID');
     }
-    console.log('articleId', articleId);
     try {
-      return await this.prismaService.article.update({
+      const result = await this.prismaService.article.update({
         where: {
           id: articleId,
         },
@@ -119,11 +122,12 @@ export class ArticlesService {
             category: { connect: { id: dto.categoryId } },
           }),
           title: dto.title,
-          ...(dto.status && { status: dto.status.toUpperCase() as Status }),
+          ...(dto.status && {
+            status: dto.status.toUpperCase() as Status,
+          }),
           ...(dto.tags &&
             Array.isArray(dto.tags) && {
               tags: {
-                set: [],
                 connectOrCreate: dto.tags.map((tag) => ({
                   where: { name: tag },
                   create: { name: tag },
@@ -135,10 +139,15 @@ export class ArticlesService {
           tags: true,
         },
       });
+      return {
+        ...result,
+        status: result.status.toLowerCase(),
+        createdAt: result.createdAt.getTime(),
+        updatedAt: result.updatedAt.getTime(),
+        tags: result.tags.map((tag) => tag.name),
+      };
     } catch (error) {
-      console.log(error);
       if (error.code === 'P2025') {
-        console.log('not found');
         throw new NotFoundException(`Article with ID ${articleId} not found`);
       }
 

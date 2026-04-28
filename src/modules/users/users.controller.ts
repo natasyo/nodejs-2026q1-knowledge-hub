@@ -32,8 +32,8 @@ export class UsersController {
 
   @Post()
   @HttpCode(201)
-  createUser(@Body() user: CreateUserDto) {
-    return this.usersService.addUser(user);
+  async createUser(@Body() user: CreateUserDto) {
+    return await this.usersService.addUser(user);
   }
   @Put(':id')
   @HttpCode(200)
@@ -41,13 +41,12 @@ export class UsersController {
     @Param('id') id: string,
     @Body() updatePasswordDto: UpdatePasswordDto,
   ) {
-    await this.usersService.updatePassword(id, updatePasswordDto);
-    return;
+    return await this.usersService.updatePassword(id, updatePasswordDto);
   }
 
   @Delete(':id')
   @HttpCode(204)
-  deleteUser(@Param('id') id: string) {
-    this.usersService.deleteUser(id);
+  async deleteUser(@Param('id') id: string) {
+    await this.usersService.deleteUser(id);
   }
 }
