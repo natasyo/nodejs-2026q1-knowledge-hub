@@ -9,9 +9,25 @@ import { CommentsModule } from './modules/comments/comments.module';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { LoggerModule } from 'nestjs-pino';
 
 @Module({
   imports: [
+    LoggerModule.forRoot({
+      pinoHttp: {
+        transport:
+          process.env.NODE_ENV !== 'production'
+            ? { target: 'pino-pretty' }
+            : undefined,
+        customLevels: {
+          verbose: 10,
+          debug: 20,
+          log: 30,
+          warn: 40,
+          error: 50,
+        },
+      },
+    }),
     ConfigModule.forRoot({
       isGlobal: true, // Это сделает ConfigService доступным везде
     }),

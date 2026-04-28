@@ -65,9 +65,6 @@ class UsersService {
       });
       return this.mapUser(result);
     } catch (e) {
-      if (e.code === 'P2002') {
-        throw new NotFoundException(`Login ${user.login} exists`);
-      }
       throw e;
     }
   }
@@ -99,9 +96,6 @@ class UsersService {
       });
       return this.mapUser(result);
     } catch (error) {
-      if (error.code === 'P2025') {
-        throw new NotFoundException(`User with ID ${userId} not found`);
-      }
       throw error;
     }
   }
@@ -113,6 +107,7 @@ class UsersService {
       await this.prismaService.user.delete({
         where: { id: userId },
       });
+      return true;
     } catch (error) {
       if (error.code === 'P2025') {
         throw new NotFoundException(`User with ID ${userId} not found`);

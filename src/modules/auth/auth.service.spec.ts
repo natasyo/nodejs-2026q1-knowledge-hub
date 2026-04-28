@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
-import usersService from '../users/users.service';
 import { vi } from 'vitest';
 import { LoginDto } from './dto/login.dto';
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
@@ -14,6 +13,7 @@ vi.mock('bcryptjs', () => ({
 }));
 
 import * as bcrypt from 'bcryptjs';
+import { Logger, PinoLogger } from 'nestjs-pino';
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -46,6 +46,25 @@ describe('AuthService', () => {
           provide: JwtService,
           useValue: {
             sign: vi.fn(),
+          },
+        },
+        {
+          provide: Logger,
+          useValue: {
+            info: vi.fn(),
+            log: vi.fn(),
+            error: vi.fn(),
+            setContext: vi.fn(),
+          },
+        },
+        {
+          provide: PinoLogger,
+          useValue: {
+            setContext: vi.fn(),
+            info: vi.fn(),
+            error: vi.fn(),
+            warn: vi.fn(),
+            debug: vi.fn(),
           },
         },
       ],
