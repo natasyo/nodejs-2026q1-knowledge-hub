@@ -10,6 +10,7 @@ import { PrismaModule } from './modules/prisma/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino';
+import { AiModule } from './modules/ai/ai.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { LoggerModule } from 'nestjs-pino';
     CommentsModule,
     PrismaModule,
     AuthModule,
+    AiModule,
   ],
   controllers: [AppController],
   providers: [AppService],
