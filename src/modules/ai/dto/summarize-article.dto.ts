@@ -7,8 +7,6 @@ export enum SummaryLength {
 }
 
 export class SummaryArticleDto {
-  @IsUUID()
-  articleId: string;
   @IsOptional()
   @IsEnum(SummaryLength)
   maxLength?: SummaryLength = SummaryLength.MEDIUM;
