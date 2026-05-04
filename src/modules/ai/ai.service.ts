@@ -9,6 +9,11 @@ import {
   TranslateArticleDto,
   TranslateArticleResponse,
 } from './dto/transalte-article.dto';
+import {
+  AnalyzeArticleRequestDto,
+  AnalyzeArticleResponse,
+  Task,
+} from './dto/analize-article.dto';
 
 @Injectable()
 export class AiService {
@@ -60,6 +65,33 @@ export class AiService {
       translatedText: result.translatedText,
       articleId: id,
       detectedLanguage: result.detectedLanguage,
+    };
+  }
+
+  async analyzeArticle(
+    id: string,
+    dto: AnalyzeArticleRequestDto,
+  ): Promise<AnalyzeArticleResponse> {
+    const article = await this.articleService.getArticleById(id);
+    const prompt = `
+      Тебе дана статья для анализа. Задача: ${dto.task}.
+      Текст статьи: ${article.content}
+      
+      Answer strictly in JSON format corresponding to the interface:
+      {
+        "analysis": "detailed analysis text",
+        "suggestions": ["tip 1", "tip 2"],
+        "severity": "info" | "warning" | "error"
+      }
+    `;
+    const response = await this.googleGenAI.models.generateContent({
+      model: 'gemini-3-flash-preview',
+      contents: [prompt],
+    });
+    const result = JSON.parse(response.text);
+    return {
+      articleId: id,
+      ...result,
     };
   }
 }
