@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { GoogleGenAI } from '@google/genai';
 import {
   SummarizeArticleResponse,
@@ -72,8 +72,9 @@ export class AiService {
     id: string,
     dto: AnalyzeArticleRequestDto,
   ): Promise<AnalyzeArticleResponse> {
-    const article = await this.articleService.getArticleById(id);
-    const prompt = `
+    try {
+      const article = await this.articleService.getArticleById(id);
+      const prompt = `
       Тебе дана статья для анализа. Задача: ${dto.task}.
       Текст статьи: ${article.content}
       
@@ -84,14 +85,18 @@ export class AiService {
         "severity": "info" | "warning" | "error"
       }
     `;
-    const response = await this.googleGenAI.models.generateContent({
-      model: 'gemini-3-flash-preview',
-      contents: [prompt],
-    });
-    const result = JSON.parse(response.text);
-    return {
-      articleId: id,
-      ...result,
-    };
+      const response = await this.googleGenAI.models.generateContent({
+        model: 'gemini-3-flash-preview',
+        contents: [prompt],
+      });
+      const result = JSON.parse(response.text);
+      return {
+        articleId: id,
+        ...result,
+      };
+    } catch (error) {
+      console.error(`Error analyzing article ${id}:`, error);
+      throw error;
+    }
   }
 }

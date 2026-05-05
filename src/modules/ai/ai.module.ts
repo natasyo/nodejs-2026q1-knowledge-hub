@@ -4,6 +4,7 @@ import { AiController } from './ai.controller';
 import { GoogleGenAI } from '@google/genai';
 import { ArticlesService } from '../articles/articles.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { AiLimiterService } from '../ai-limiter/ai-limiter.service';
 
 @Module({
   controllers: [AiController],
@@ -11,6 +12,7 @@ import { PrismaService } from '../prisma/prisma.service';
     AiService,
     ArticlesService,
     PrismaService,
+    AiLimiterService,
     {
       provide: GoogleGenAI,
       useFactory: () => {

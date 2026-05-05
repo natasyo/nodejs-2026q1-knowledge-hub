@@ -15,12 +15,37 @@ export function createPinoLogger(): pino.Logger {
   const baseOptions: pino.LoggerOptions = {
     level: logLevel,
     timestamp: pino.stdTimeFunctions.isoTime,
+    hooks: {
+      logMethod(inputArgs, method) {
+        return method.apply(this, inputArgs);
+      },
+    },
     formatters: {
       level: (label) => {
         return { level: label };
       },
       bindings: (bindings) => {
         return { pid: bindings.pid };
+      },
+      log: (object: any) => {
+        console.log('Обрабатываем объект лога:', object);
+        if (object.msg && typeof object.msg === 'object') {
+          // 1. Пытаемся вытащить текст: сначала из message, потом из type (как в вашем логе), иначе JSON
+          const message =
+            object.msg.message ||
+            object.msg.type ||
+            (typeof object.msg === 'string'
+              ? object.msg
+              : JSON.stringify(object.msg));
+
+          // 2. Сохраняем исходный объект в err_details, чтобы не потерять контекст
+          return {
+            ...object,
+            msg: message,
+            err_details: object.msg,
+          };
+        }
+        return object;
       },
     },
   };

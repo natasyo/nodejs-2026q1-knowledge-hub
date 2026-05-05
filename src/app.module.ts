@@ -11,6 +11,8 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { LoggerModule } from 'nestjs-pino';
 import { AiModule } from './modules/ai/ai.module';
+import { AiLimiterService } from './modules/ai-limiter/ai-limiter.service';
+import { AiLimiterModule } from './modules/ai-limiter/ai-limiter.module';
 
 @Module({
   imports: [
@@ -39,8 +41,9 @@ import { AiModule } from './modules/ai/ai.module';
     PrismaModule,
     AuthModule,
     AiModule,
+    AiLimiterModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AiLimiterService],
 })
 export class AppModule {}
