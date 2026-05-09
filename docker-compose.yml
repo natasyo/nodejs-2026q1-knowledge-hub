@@ -4,8 +4,27 @@ networks:
 
 volumes:
   postgres-data:
+  chroma_data:
+    driver: local
 
 services:
+
+  vectordb:
+    image: chromadb/chroma:latest
+    container_name: chromadb
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma_data:/chroma/chroma  # Постоянный объем для векторов
+    restart: always
+    environment:
+      - IS_PERSISTENT=TRUE
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/api/v1/heartbeat" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   db:
     image: postgres:16-alpine
     restart: unless-stopped

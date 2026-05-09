@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { GoogleGenAI } from '@google/genai';
 import {
   SummarizeArticleResponse,
@@ -12,7 +12,6 @@ import {
 import {
   AnalyzeArticleRequestDto,
   AnalyzeArticleResponse,
-  Task,
 } from './dto/analize-article.dto';
 
 @Injectable()
@@ -86,7 +85,7 @@ export class AiService {
       }
     `;
       const response = await this.googleGenAI.models.generateContent({
-        model: 'gemini-3-flash-preview',
+        model: 'gemini-2.0-flash-lite',
         contents: [prompt],
       });
       const result = JSON.parse(response.text);
