@@ -32,6 +32,7 @@
     "test:report": "vitest run --reporter=verbose"
   },
   "dependencies": {
+    "@google/genai": "^1.51.0",
     "@nestjs/common": "^11.1.17",
     "@nestjs/config": "^4.0.4",
     "@nestjs/core": "^11.1.17",

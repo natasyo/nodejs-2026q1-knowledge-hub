@@ -17,7 +17,9 @@ import { UpdateArticleDto } from './articleDto/update-article.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Response } from 'express';
 import { GetArticlesQueryDto } from './articleDto/get-articles-query.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth('JWT-auth')
 @UseGuards(JwtAuthGuard)
 @Controller('article')
 export class ArticlesController {

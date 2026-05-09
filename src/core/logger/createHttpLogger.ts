@@ -1,9 +1,11 @@
 import pinoHttp from 'pino-http';
 import { sanitizeLogs } from './sanitizeLogs';
 import { createPinoLogger } from './createPinoLogger';
+import pino from 'pino';
 
 export function createHttpLogger() {
   const logger = createPinoLogger();
+  console.log('Текущий уровень Pino:', logger.level);
 
   return pinoHttp({
     logger,
@@ -32,11 +34,16 @@ export function createHttpLogger() {
         statusCode: res.statusCode,
         headers: res.getHeaders(),
       }),
-      err: (err) => ({
-        message: err.message,
-        stack: err.stack,
-        statusCode: (err as any).statusCode || 500,
-      }),
+      err: pino.stdSerializers.err,
+      msg: (payload) => {
+        if (payload instanceof Error) {
+          return {
+            message: payload.message,
+            stack: payload.stack,
+          };
+        }
+        return payload;
+      },
     },
     autoLogging: {
       ignore: (req) => {

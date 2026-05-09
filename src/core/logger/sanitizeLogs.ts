@@ -2,7 +2,6 @@ export function sanitizeLogs(data: any): any {
   if (!data || typeof data !== 'object') {
     return data;
   }
-
   if (Array.isArray(data)) {
     return data.map(sanitizeLogs);
   }
